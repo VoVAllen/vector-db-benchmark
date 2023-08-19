@@ -54,7 +54,7 @@ class PgvectorsSearcher(BaseSearcher):
             WHERE {conditions}
             ORDER BY embedding {operator} %s LIMIT %s;
             """.format(operator=operator_mapping[cls.distance], conditions=conditions)
-        print("query: ",query)
+        # print("query: ",query)
         with cls.client.cursor() as cursor:
             cursor.execute(
                 query, (vec_str, vec_str, top))
