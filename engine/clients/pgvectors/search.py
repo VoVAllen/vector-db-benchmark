@@ -33,6 +33,10 @@ class PgvectorsSearcher(BaseSearcher):
     @classmethod
     def search_one(cls, vector, meta_conditions, top) -> List[Tuple[int, float]]:        
         conditions = cls.parser.parse(meta_conditions)
+        vec_str = str(vector)
+        print(meta_conditions)
+        print(conditions)
+        # exit()
         operator_mapping = {
             Distance.COSINE: "<=>",
             Distance.L2: '<->',
@@ -41,10 +45,16 @@ class PgvectorsSearcher(BaseSearcher):
         if conditions is None:
             prefilter_condition = "*"
             params = {}
-        vec_str = str(vector)
-        query = """
-        SELECT id, embedding {operator} %s AS vector_score FROM train ORDER BY embedding {operator} %s LIMIT %s;
-        """.format(operator=operator_mapping[cls.distance])
+            query = """
+            SELECT id, embedding {operator} %s AS vector_score FROM train ORDER BY embedding {operator} %s LIMIT %s;
+            """.format(operator=operator_mapping[cls.distance])
+        else:            
+            query = """
+            SELECT id, embedding {operator} %s AS vector_score FROM train 
+            WHERE {conditions}
+            ORDER BY embedding {operator} %s LIMIT %s;
+            """.format(operator=operator_mapping[cls.distance], conditions=conditions)
+        print("query: ",query)
         with cls.client.cursor() as cursor:
             cursor.execute(
                 query, (vec_str, vec_str, top))

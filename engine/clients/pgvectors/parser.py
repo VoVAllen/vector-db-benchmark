@@ -18,7 +18,7 @@ class PgvectorsConditionParser(BaseConditionParser):
 
     def build_exact_match_filter(self, field_name: str, value: FieldValue) -> Any:
         # json.dumps is called so the string value gets additional quotation marks
-        return f"{field_name} = '{json.dumps(value)}'"
+        return f"{field_name} = {json.dumps(value)}"
 
     def build_range_filter(
         self,

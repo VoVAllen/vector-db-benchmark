@@ -45,15 +45,30 @@ class PgvectorsUploader(BaseUploader):
         cls, ids: List[int], vectors: List[list], metadata: Optional[List[dict]]
     ):
         if metadata is None:
-            metadata = [{}] * len(vectors)
-        operations = []
-        with cls.client.cursor() as cursor:
+            operations = []
+            INSERT_TRAIN = "INSERT INTO train VALUES (%s, %s)"
+            table_train = []
+            for idx, vector, payload in zip(ids, vectors):
+                table_train.append((idx, str(vector)))
+            with cls.client.cursor() as cursor:
+                cursor.executemany(
+                    INSERT_TRAIN, table_train)
+            cls.client.commit()
+        else:
+            fields_template = ','.join(
+                ['%s' for _ in range(len(metadata[0])+2)])
+            INSERT_TRAIN = "INSERT INTO train VALUES ({})".format(
+                fields_template)
             table_train = []
             for idx, vector, payload in zip(ids, vectors, metadata):
-                table_train.append((idx, str(vector)))
-            cursor.executemany(
-                INSERT_TRAIN, table_train)
-        cls.client.commit()
+                fields = [idx, str(vector)]
+                for k, v in payload.items():
+                    fields.append(v)
+                table_train.append(fields)
+            with cls.client.cursor() as cursor:
+                cursor.executemany(
+                    INSERT_TRAIN, table_train)
+            cls.client.commit()
 
     @classmethod
     def post_upload(cls, _distance):
@@ -62,12 +77,11 @@ class PgvectorsUploader(BaseUploader):
             Distance.COSINE: "cosine_ops",
             Distance.DOT: "dot_ops",
         }
-        with cls.client.cursor() as cursor:
-            cursor.execute(CREATE_INDEX.format(
-                distance_op=DISTANCE_MAPPING[_distance]))
-        cls.client.commit()
+        # with cls.client.cursor() as cursor:
+        #     cursor.execute(CREATE_INDEX.format(
+        #         distance_op=DISTANCE_MAPPING[_distance]))
+        # cls.client.commit()
 
-    
     @classmethod
     def delete_client(cls):
         cls.client.close()
