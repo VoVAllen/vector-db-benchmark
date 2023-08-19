@@ -77,10 +77,10 @@ class PgvectorsUploader(BaseUploader):
             Distance.COSINE: "cosine_ops",
             Distance.DOT: "dot_ops",
         }
-        # with cls.client.cursor() as cursor:
-        #     cursor.execute(CREATE_INDEX.format(
-        #         distance_op=DISTANCE_MAPPING[_distance]))
-        # cls.client.commit()
+        with cls.client.cursor() as cursor:
+            cursor.execute(CREATE_INDEX.format(
+                distance_op=DISTANCE_MAPPING[_distance]))
+        cls.client.commit()
 
     @classmethod
     def delete_client(cls):
