@@ -1,0 +1,13 @@
+[
+    {
+      "name": "pgvectors",
+      "engine": "pgvectors",
+      "connection_params": {},
+      "collection_params": {
+      },
+      "search_params": [
+        { "parallel": 2, "search_params": { "ef": 64 } }
+      ],
+      "upload_params": { "parallel": 16, "batch_size": 1024 }
+    }
+]
