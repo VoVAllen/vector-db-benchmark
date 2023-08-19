@@ -34,9 +34,6 @@ class PgvectorsSearcher(BaseSearcher):
     def search_one(cls, vector, meta_conditions, top) -> List[Tuple[int, float]]:        
         conditions = cls.parser.parse(meta_conditions)
         vec_str = str(vector)
-        print(meta_conditions)
-        print(conditions)
-        # exit()
         operator_mapping = {
             Distance.COSINE: "<=>",
             Distance.L2: '<->',
