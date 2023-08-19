@@ -48,6 +48,7 @@ class PgvectorsUploader(BaseUploader):
             operations = []
             INSERT_TRAIN = "INSERT INTO train VALUES (%s, %s)"
             table_train = []
+            cls.metadata_key = []
             for idx, vector, payload in zip(ids, vectors):
                 table_train.append((idx, str(vector)))
             with cls.client.cursor() as cursor:
@@ -57,6 +58,7 @@ class PgvectorsUploader(BaseUploader):
         else:
             fields_template = ','.join(
                 ['%s' for _ in range(len(metadata[0])+2)])
+            cls.metadata_key = list(metadata[0].keys())
             INSERT_TRAIN = "INSERT INTO train VALUES ({})".format(
                 fields_template)
             table_train = []
@@ -80,6 +82,11 @@ class PgvectorsUploader(BaseUploader):
         with cls.client.cursor() as cursor:
             cursor.execute(CREATE_INDEX.format(
                 distance_op=DISTANCE_MAPPING[_distance]))
+        if cls.metadata_key:
+            with cls.client.cursor() as cursor:
+                for k in cls.metadata_key:
+                    cursor.execute(
+                        f"CREATE INDEX ON train ({k})")
         cls.client.commit()
 
     @classmethod
