@@ -1,5 +1,6 @@
 import uuid
 from typing import List, Optional
+from benchmark.dataset import Dataset
 
 import psycopg
 from engine.base_client.distances import Distance
@@ -39,6 +40,7 @@ class PgvectorsUploader(BaseUploader):
         cls.client = psycopg.connect(**config)
         cls.upload_params = upload_params
         cls.distance = distance
+        cls.metadata_key = []
 
     @classmethod
     def upload_batch(
@@ -73,20 +75,25 @@ class PgvectorsUploader(BaseUploader):
             cls.client.commit()
 
     @classmethod
-    def post_upload(cls, _distance):
+    def post_upload(cls, _distance, dataset: Dataset):
         DISTANCE_MAPPING = {
             Distance.L2: "l2_ops",
             Distance.COSINE: "cosine_ops",
             Distance.DOT: "dot_ops",
         }
-        with cls.client.cursor() as cursor:
-            cursor.execute(CREATE_INDEX.format(
-                distance_op=DISTANCE_MAPPING[_distance]))
-        if cls.metadata_key:
+        # with cls.client.cursor() as cursor:
+        #     cursor.execute(CREATE_INDEX.format(
+        #         distance_op=DISTANCE_MAPPING[_distance]))
+        
+        schema = dataset.config.schema
+        if len(schema)>0:
+            print("schema: ", schema)
             with cls.client.cursor() as cursor:
-                for k in cls.metadata_key:
+                for k in schema.keys():
                     cursor.execute(
                         f"CREATE INDEX ON train ({k})")
+        else:
+            print("no schema")
         cls.client.commit()
 
     @classmethod
