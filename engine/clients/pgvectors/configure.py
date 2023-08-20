@@ -24,6 +24,7 @@ class PgvectorsConfigurator(BaseConfigurator):
     }
     FIELD_MAPPING = {
         "int": 'integer',
+        'float': 'float',
         # "geo": GeoField,
     }
 
