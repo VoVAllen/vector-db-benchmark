@@ -57,7 +57,8 @@ class PgvectorsConfigurator(BaseConfigurator):
             [f'{k} {self.FIELD_MAPPING[v]}' for (k, v) in schema.items()])
         if len(extra_fields) > 0:
             extra_fields = ', ' + extra_fields
-        print(RECREATE_DDL.format(dims=dataset.config.vector_size, extra_fields=extra_fields))
+        ddl = RECREATE_DDL.format(dims=dataset.config.vector_size, extra_fields=extra_fields)
+        print(ddl)
         with self.conn.cursor() as cursor:
-            cursor.execute(RECREATE_DDL.format(dims=dataset.config.vector_size, extra_fields=extra_fields))
+            cursor.execute(ddl)
         self.conn.commit()

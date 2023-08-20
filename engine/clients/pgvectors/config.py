@@ -1,6 +1,6 @@
 PGVECTORS_DB_CONFIG = {
     'dbname': 'postgres',
     'user': 'postgres',
-    'port': 5432,
+    'port': 6432,
     'password': 'mysecretpassword'
 }

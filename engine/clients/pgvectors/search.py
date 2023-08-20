@@ -28,6 +28,11 @@ class PgvectorsSearcher(BaseSearcher):
         cls.client =  psycopg.connect(**config)
         cls.search_params = search_params
         cls.distance = distance
+        if "hnsw_ef" in search_params:
+            with cls.client.cursor() as cursor:
+                print("Set hnsw_ef: ", search_params["hnsw_ef"])
+                cursor.execute('set vectors.k={}'.format(search_params["hnsw_ef"]))
+            cls.client.commit()
         print(search_params)
 
     @classmethod
@@ -51,7 +56,7 @@ class PgvectorsSearcher(BaseSearcher):
             WHERE {conditions}
             ORDER BY embedding {operator} %s LIMIT %s;
             """.format(operator=operator_mapping[cls.distance], conditions=conditions)
-        # print("query: ",query)
+        # print("query: ",query, '    ', top)
         with cls.client.cursor() as cursor:
             cursor.execute(
                 query, (vec_str, vec_str, top))

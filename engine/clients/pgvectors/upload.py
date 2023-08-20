@@ -18,6 +18,8 @@ CREATE_INDEX = """
     memmap = "ram"
     [algorithm.hnsw]
     memmap = "ram"
+    m = 16
+    ef = 128
     $$);
 """
 
