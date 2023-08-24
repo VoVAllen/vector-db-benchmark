@@ -28,7 +28,6 @@ class BaseUploader:
         self,
         distance,
         records: Iterable[Record],
-        dataset, 
     ) -> dict:
         latencies = []
         start = time.perf_counter()
@@ -65,7 +64,7 @@ class BaseUploader:
 
         print("Upload time: {}".format(upload_time))
 
-        post_upload_stats = self.post_upload(distance, dataset)
+        post_upload_stats = self.post_upload(distance)
 
         total_time = time.perf_counter() - start
 
@@ -90,7 +89,7 @@ class BaseUploader:
         return time.perf_counter() - start
 
     @classmethod
-    def post_upload(cls, distance, dataset=None):
+    def post_upload(cls, distance):
         return {}
 
     @classmethod

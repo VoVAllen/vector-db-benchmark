@@ -77,7 +77,7 @@ class PgvectorsUploader(BaseUploader):
             cls.client.commit()
 
     @classmethod
-    def post_upload(cls, _distance, dataset: Dataset):
+    def post_upload(cls, _distance):
         DISTANCE_MAPPING = {
             Distance.L2: "l2_ops",
             Distance.COSINE: "cosine_ops",
@@ -86,16 +86,6 @@ class PgvectorsUploader(BaseUploader):
         with cls.client.cursor() as cursor:
             cursor.execute(CREATE_INDEX.format(
                 distance_op=DISTANCE_MAPPING[_distance]))
-        
-        schema = dataset.config.schema
-        if len(schema)>0:
-            print("schema: ", schema)
-            with cls.client.cursor() as cursor:
-                for k in schema.keys():
-                    cursor.execute(
-                        f"CREATE INDEX ON train ({k})")
-        else:
-            print("no schema")
         cls.client.commit()
 
     @classmethod

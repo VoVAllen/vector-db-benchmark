@@ -59,6 +59,20 @@ class PgvectorsConfigurator(BaseConfigurator):
             extra_fields = ', ' + extra_fields
         ddl = RECREATE_DDL.format(dims=dataset.config.vector_size, extra_fields=extra_fields)
         print(ddl)
+        
+
         with self.conn.cursor() as cursor:
             cursor.execute(ddl)
+        self.conn.commit()
+
+        
+        schema = dataset.config.schema
+        if len(schema)>0:
+            print("schema: ", schema)
+            with self.client.cursor() as cursor:
+                for k in schema.keys():
+                    cursor.execute(
+                        f"CREATE INDEX ON train ({k})")
+        else:
+            print("no extra schemas")
         self.conn.commit()
