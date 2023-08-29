@@ -17,11 +17,6 @@ CLEAN_DDL = """
 
 
 class PgvectorConfigurator(BaseConfigurator):
-    DISTANCE_MAPPING = {
-        Distance.L2: "l2_ops",
-        Distance.COSINE: "cosine_ops",
-        Distance.DOT: "dot_ops",
-    }
     FIELD_MAPPING = {
         "int": 'integer',
         'float': 'float',
