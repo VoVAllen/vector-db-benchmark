@@ -11,7 +11,7 @@ from engine.clients.pgvector.config import PGVECTOR_DB_CONFIG
 
 INSERT_TRAIN = "INSERT INTO train VALUES (%s, %s)"
 CREATE_INDEX = """
-    CREATE INDEX ON items USING hnsw (embedding {distance_op}) WITH (m = 16, ef_construction = 128);
+    CREATE INDEX ON train USING hnsw (embedding {distance_op}) WITH (m = 16, ef_construction = 128);
 """
 
 

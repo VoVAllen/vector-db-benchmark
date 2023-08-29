@@ -36,8 +36,8 @@ class PgvectorConfigurator(BaseConfigurator):
         self.conn = psycopg.connect(**config)
         with self.conn.cursor() as cursor:
             cursor.execute('DROP TABLE IF EXISTS train;')
-            cursor.execute('DROP EXTENSION IF EXISTS vectors')
-            cursor.execute('CREATE EXTENSION vectors')
+            cursor.execute('DROP EXTENSION IF EXISTS vector')
+            cursor.execute('CREATE EXTENSION vector')
         self.conn.commit()
 
     def clean(self):
