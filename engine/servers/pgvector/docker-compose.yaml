@@ -5,8 +5,7 @@ services:
     image: ankane/pgvector
     network_mode: host
     environment:
-      - POSTGRESQL_DATABASE=postgres
-      - POSTGRESQL_PASSWORD=mysecretpassword
+      - POSTGRES_PASSWORD=mysecretpassword
     deploy:
       resources:
         limits:
