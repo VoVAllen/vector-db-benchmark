@@ -5,7 +5,7 @@ from engine.base_client.configure import BaseConfigurator
 from engine.base_client.distances import Distance
 import psycopg
 
-from engine.clients.pgvectors.config import PGVECTORS_DB_CONFIG
+from engine.clients.pgvector.config import PGVECTOR_DB_CONFIG
 
 RECREATE_DDL = """
     DROP TABLE IF EXISTS train;
@@ -16,7 +16,7 @@ CLEAN_DDL = """
 """
 
 
-class PgvectorsConfigurator(BaseConfigurator):
+class PgvectorConfigurator(BaseConfigurator):
     DISTANCE_MAPPING = {
         Distance.L2: "l2_ops",
         Distance.COSINE: "cosine_ops",
@@ -30,7 +30,7 @@ class PgvectorsConfigurator(BaseConfigurator):
 
     def __init__(self, host, collection_params: dict, connection_params: dict):
         super().__init__(host, collection_params, connection_params)
-        config = PGVECTORS_DB_CONFIG
+        config = PGVECTOR_DB_CONFIG
         config['host'] = host
 
         self.conn = psycopg.connect(**config)

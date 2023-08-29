@@ -1,0 +1,20 @@
+version: '3.5'
+
+services:
+  postgres:
+    image: ankane/pgvector
+    network_mode: host
+    environment:
+      - POSTGRESQL_DATABASE=postgres
+      - POSTGRESQL_PASSWORD=mysecretpassword
+    deploy:
+      resources:
+        limits:
+          memory: 25Gb
+  pgbouncer:
+    image: bitnami/pgbouncer:latest
+    network_mode: host
+    environment:
+      - POSTGRESQL_DATABASE=postgres
+      - POSTGRESQL_HOST=localhost
+      - POSTGRESQL_PASSWORD=mysecretpassword

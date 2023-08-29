@@ -5,16 +5,16 @@ import psycopg
 from engine.base_client.distances import Distance
 
 from engine.base_client.search import BaseSearcher
-from engine.clients.pgvectors.config import PGVECTORS_DB_CONFIG
-from engine.clients.pgvectors.parser import PgvectorsConditionParser
+from engine.clients.pgvector.config import PGVECTOR_DB_CONFIG
+from engine.clients.pgvector.parser import PgvectorConditionParser
 from engine.clients.redis.config import REDIS_PORT
 from engine.clients.redis.parser import RedisConditionParser
 
 
-class PgvectorsSearcher(BaseSearcher):
+class PgvectorSearcher(BaseSearcher):
     search_params = {}
     client = None
-    parser = PgvectorsConditionParser()
+    parser = PgvectorConditionParser()
 
     
     @classmethod
@@ -23,17 +23,15 @@ class PgvectorsSearcher(BaseSearcher):
 
     @classmethod
     def init_client(cls, host, distance, connection_params: dict, search_params: dict):
-        config = PGVECTORS_DB_CONFIG
+        config = PGVECTOR_DB_CONFIG
         config['host'] = host
-        cls.client =  psycopg.connect(**config)        
-        if 'search_params' in search_params:
-            search_params = search_params['search_params']
+        cls.client =  psycopg.connect(**config)
         cls.search_params = search_params
         cls.distance = distance
         if "hnsw_ef" in search_params:
             with cls.client.cursor() as cursor:
                 print("Set hnsw_ef: ", search_params["hnsw_ef"])
-                cursor.execute('set vectors.k={}'.format(search_params["hnsw_ef"]))
+                cursor.execute('set hnsw.ef_search={}'.format(search_params["hnsw_ef"]))
             cls.client.commit()
         print(search_params)
 

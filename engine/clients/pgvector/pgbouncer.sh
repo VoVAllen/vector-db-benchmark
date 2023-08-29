@@ -1,0 +1,2 @@
+docker run --name pgbouncer --net=host -e POSTGRESQL_DATABASE=postgres -e POSTGRESQL_HOST=localhost -e POSTGRESQL_PASSWORD=mysecretpassword -d bitnami/pgbouncer:latest
+docker run --name pgvecto-rs-demo -e POSTGRES_PASSWORD=mysecretpassword --net=host -v /mnt/disks/ssd0/pgdata/:/var/lib/postgresql/data -d tensorchord/pgvecto-rs:latest
